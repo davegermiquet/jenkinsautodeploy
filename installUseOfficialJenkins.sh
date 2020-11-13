@@ -8,6 +8,7 @@ export DEBOS_CMD=docker
 # configures the Default Plugins to install
 
 cat << END > pluginstoinstall.txt
+workflow-multibranch
 ant:latest 
 antisamy-markup-formatter:latest 
 build-timeout:latest 
@@ -79,6 +80,7 @@ $DEBOS_CMD run --name jenkins-docker  --rm  --detach  --privileged  -e DOCKER_TL
 # This is also done becasue it sometimes times out in install
 
 $DEBOS_CMD cp pluginstoinstall.txt  jenkinsofficialinstaller:/tmp/pluginstoinstall.txt
+$DEBOS_CMD exec jenkinsofficialinstaller jenkins-plugin-cli --plugins blueocean:1.24.3 
 $DEBOS_CMD exec jenkinsofficialinstaller jenkins-plugin-cli --plugin-file /tmp/pluginstoinstall.txt
-
+$DEBOS_CMD restart jenkinsofficialinstaller
 sleep 10
