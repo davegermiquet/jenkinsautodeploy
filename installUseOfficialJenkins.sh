@@ -88,9 +88,6 @@ $DEBOS_CMD restart jenkinsofficialinstaller
 # import the config (crumb is important)
 sleep 60
 export COOKIEJAR="$(mktemp)"
-export CRUMB=$(curl  --cookie-jar "$COOKIEJAR" "http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)")
-curl -X POST --cookie "$COOKIEJAR" -H $"CRUMB" "http://localhost:8080/view/all/createItem?&mode=com.cloudbees.hudson.plugins.folder.Folder&name=QLedger" -H "Content-Type:application/xml"
-export COOKIEJAR="$(mktemp)"
-export CRUMB=$(curl  --cookie-jar "$COOKIEJAR" "http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)")
-curl -X POST --cookie "$COOKIEJAR" -H "$CRUMB" http://localhost:8080/newJob\?name=QLedger  --data-binary @qledgerconfig.xml -H "Content-Type:application/xml"
+#export CRUMB=$(curl  --cookie-jar "$COOKIEJAR" "http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)")
+#curl -X POST --cookie "$COOKIEJAR" -H "$CRUMB" http://localhost:8080/newJob\?name=QLedger  --data-binary @qledgerconfig.xml -H "Content-Type:application/xml"
 
