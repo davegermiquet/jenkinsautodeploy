@@ -18,9 +18,8 @@ $ docker run -d --restart=always \
     alpine/socat \
     tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
 
-2. ./installUseOfficialJenkins.sh  (it will display the password )
+2. Setup storage drive  in workspace folder
 
-3. Setup storage drive  in workspace folder
+3. Log in to server http://localhost:8080
 
-4. Log in to server http://localhost:8080
-
+By default no password is shown for convenience
