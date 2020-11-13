@@ -3,20 +3,19 @@
 # Installs ansible prequisites jenkins and developer utilities for the application build environment
 # Create DOCKER FILE
 
+export JENKINS_DOWNLOAD_MIRROR_TO_USE=http://mirrors.jenkins-ci.org/
 export DEBOS_CMD=docker
 
 # configures the Default Plugins to install
 
 cat << END > pluginstoinstall.txt
+blueocean:1.24.3 
 workflow-multibranch
 build-timeout:latest 
-cloudbees-folder:latest
 configuration-as-code:latest
 credentials-binding:latest 
 git:latest 
 github-branch-source:latest 
-mailer:latest  
-pam-auth:latest 
 pipeline-github-lib:latest 
 pipeline-stage-view:latest 
 timestamper:latest 
@@ -73,7 +72,8 @@ $DEBOS_CMD run --name jenkins-docker  --rm  --detach  --privileged  -e DOCKER_TL
 # This is also done becasue it sometimes times out in install
 
 $DEBOS_CMD cp pluginstoinstall.txt  jenkinsofficialinstaller:/tmp/pluginstoinstall.txt
-$DEBOS_CMD exec jenkinsofficialinstaller jenkins-plugin-cli --plugins blueocean:1.24.3 
-$DEBOS_CMD exec jenkinsofficialinstaller jenkins-plugin-cli --plugin-file /tmp/pluginstoinstall.txt
+
+$DEBOS_CMD exec jenkinsofficialinstaller sh -c "rm -rf /usr/share/jenkins/ref/plugins/*.lock"
+$DEBOS_CMD exec jenkinsofficialinstaller sh -c "cd /tmp;JENKINS_UC_DOWNLOAD=${JENKINS_DOWNLOAD_MIRROR_TO_USE}  jenkins-plugin-cli --plugin-file  pluginstoinstall.txt"
 $DEBOS_CMD restart jenkinsofficialinstaller
 sleep 10
