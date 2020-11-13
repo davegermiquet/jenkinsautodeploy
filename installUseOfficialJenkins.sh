@@ -5,6 +5,13 @@
 
 export JENKINS_DOWNLOAD_MIRROR_TO_USE=http://mirrors.jenkins-ci.org/
 export DEBOS_CMD=docker
+COOKIE_PATH=/tmp/cookie_jenkins_crumb.txt
+
+# https://support.cloudbees.com/hc/en-us/articles/219257077-CSRF-Protection-Explained
+# https://wiki.jenkins.io/display/JENKINS/Remote+access+API#RemoteaccessAPI-CSRFProtection
+# but a bit adjusted as it is not exactly usable as it is in the documentation page.
+# We discovered that the CRUMB should be identical because it
+# is paired with a cookie. Thus save the cookie, it is important.
 
 # configures the Default Plugins to install
 
@@ -22,6 +29,7 @@ timestamper:latest
 workflow-aggregator:latest 
 ws-cleanup:latest 
 file-operations:latest 
+job-import-plugin
 END
 
 # Custmize Docker file for image
@@ -40,8 +48,9 @@ RUN add-apt-repository \
        "deb [arch=amd64] https://download.docker.com/linux/debian \
        \$(lsb_release -cs) stable"
 RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com \$(lsb_release -cs) main"
-RUN apt-get update && apt-get install -y docker-ce-cli terraform wget ansible rsync git python3-pip python3-dev python3 curl apt-utils  software-properties-common golang net-tools dnsmasq
+RUN apt-get update && apt-get install -y docker-ce-cli terraform wget ansible rsync git python3-pip python3-dev python3 curl apt-utils  software-properties-common golang net-tools dnsmasq postgresql-client
 USER jenkins
+
 VOLUME /var/jenkins_home/workspace
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 ENV JENKINS_PORT="8080"
@@ -76,4 +85,12 @@ $DEBOS_CMD cp pluginstoinstall.txt  jenkinsofficialinstaller:/tmp/pluginstoinsta
 $DEBOS_CMD exec jenkinsofficialinstaller sh -c "rm -rf /usr/share/jenkins/ref/plugins/*.lock"
 $DEBOS_CMD exec jenkinsofficialinstaller sh -c "cd /tmp;JENKINS_UC_DOWNLOAD=${JENKINS_DOWNLOAD_MIRROR_TO_USE}  jenkins-plugin-cli --plugin-file  pluginstoinstall.txt"
 $DEBOS_CMD restart jenkinsofficialinstaller
-sleep 10
+# import the config (crumb is important)
+sleep 60
+export COOKIEJAR="$(mktemp)"
+export CRUMB=$(curl  --cookie-jar "$COOKIEJAR" "http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)")
+curl -X POST --cookie "$COOKIEJAR" -H $"CRUMB" "http://localhost:8080/view/all/createItem?&mode=com.cloudbees.hudson.plugins.folder.Folder&name=QLedger" -H "Content-Type:application/xml"
+export COOKIEJAR="$(mktemp)"
+export CRUMB=$(curl  --cookie-jar "$COOKIEJAR" "http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)")
+curl -X POST --cookie "$COOKIEJAR" -H "$CRUMB" http://localhost:8080/newJob\?name=QLedger  --data-binary @qledgerconfig.xml -H "Content-Type:application/xml"
+
