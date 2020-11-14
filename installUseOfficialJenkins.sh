@@ -31,6 +31,7 @@ ws-cleanup:latest
 file-operations:latest 
 job-import-plugin
 terraform
+aws-credentials
 END
 
 # Custmize Docker file for image
