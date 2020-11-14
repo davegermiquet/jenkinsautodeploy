@@ -54,12 +54,10 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 RUN unzip awscliv2.zip
 RUN ./aws/install
 
+RUN rm -rf /var/jenkins_home/.ssh
 USER jenkins
-RUN mkdir ~/.ssh
-RUN ssh-keygen -b 2048 -t rsa -f ~/.ssh -q -N ""
-RUN ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
-
 VOLUME /var/jenkins_home/workspace
+RUN echo y |  ssh-keygen -N "" -b 4028 -f /var/jenkins_home/.ssh/id_rsa
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 ENV JENKINS_PORT="8080"
 ENV JENKINS_HTTPS_PORT="-1"
@@ -89,7 +87,6 @@ $DEBOS_CMD run --name jenkins-docker  --rm  --detach  --privileged  -e DOCKER_TL
 # This is also done becasue it sometimes times out in install
 
 $DEBOS_CMD cp pluginstoinstall.txt  jenkinsofficialinstaller:/tmp/pluginstoinstall.txt
-
 $DEBOS_CMD exec jenkinsofficialinstaller sh -c "rm -rf /usr/share/jenkins/ref/plugins/*.lock"
 $DEBOS_CMD exec jenkinsofficialinstaller sh -c "cd /tmp;JENKINS_UC_DOWNLOAD=${JENKINS_DOWNLOAD_MIRROR_TO_USE}  jenkins-plugin-cli --plugin-file  pluginstoinstall.txt"
 $DEBOS_CMD restart jenkinsofficialinstaller
