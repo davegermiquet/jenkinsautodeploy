@@ -55,6 +55,9 @@ RUN unzip awscliv2.zip
 RUN ./aws/install
 
 USER jenkins
+RUN mkdir ~/.ssh
+RUN ssh-keygen -b 2048 -t rsa -f ~/.ssh -q -N ""
+RUN ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
 
 VOLUME /var/jenkins_home/workspace
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
