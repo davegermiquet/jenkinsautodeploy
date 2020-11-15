@@ -50,7 +50,7 @@ RUN add-apt-repository \
        \$(lsb_release -cs) stable"
 RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com \$(lsb_release -cs) main"
 RUN apt-get -y purge python2.7
-RUN apt-get update && apt-get install -y docker-ce-cli terraform wget ansible rsync git python3-pip python3-dev python3 curl apt-utils  software-properties-common golang net-tools dnsmasq postgresql-client openssh-server
+RUN apt-get update && apt-get install -y docker-ce-cli terraform wget ansible rsync git python3-pip python3-dev python3 curl apt-utils  software-properties-common golang net-tools dnsmasq postgresql-client openssh-server 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
 RUN ./aws/install
