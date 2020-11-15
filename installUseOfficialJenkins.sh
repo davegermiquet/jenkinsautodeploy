@@ -91,6 +91,8 @@ $DEBOS_CMD cp pluginstoinstall.txt  jenkinsofficialinstaller:/tmp/pluginstoinsta
 $DEBOS_CMD exec jenkinsofficialinstaller sh -c "rm -rf /usr/share/jenkins/ref/plugins/*.lock"
 $DEBOS_CMD exec jenkinsofficialinstaller sh -c "cd /tmp;JENKINS_UC_DOWNLOAD=${JENKINS_DOWNLOAD_MIRROR_TO_USE}  jenkins-plugin-cli --plugin-file  pluginstoinstall.txt"
 $DEBOS_CMD restart jenkinsofficialinstaller
+$DEBOS_CMD exec jenkinsofficialinstaller ansible-galaxy collection install community.kubernetes
+
 # import the config (crumb is important)
 sleep 60
 export COOKIEJAR="$(mktemp)"
