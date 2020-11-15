@@ -5,6 +5,9 @@ It auto deploys jenkin with One Project QLedger as an example, and you can acces
 
 This project is tested on Macintosh with OS X 10.15.7 (19
 
+Pre-Knowledge:
+
+This how to expects you to understand JENKINS, AWS and modifying text files and using GIT particularly GITHUB
 
 Pre-Requisites:
 
