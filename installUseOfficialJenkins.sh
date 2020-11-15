@@ -49,6 +49,7 @@ RUN add-apt-repository \
        "deb [arch=amd64] https://download.docker.com/linux/debian \
        \$(lsb_release -cs) stable"
 RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com \$(lsb_release -cs) main"
+RUN apt-get -y purge python2.7
 RUN apt-get update && apt-get install -y docker-ce-cli terraform wget ansible rsync git python3-pip python3-dev python3 curl apt-utils  software-properties-common golang net-tools dnsmasq postgresql-client openssh-server
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
@@ -92,7 +93,6 @@ $DEBOS_CMD exec jenkinsofficialinstaller sh -c "cd /tmp;JENKINS_UC_DOWNLOAD=${JE
 $DEBOS_CMD restart jenkinsofficialinstaller
 # import the config (crumb is important)
 sleep 60
-#export COOKIEJAR="$(mktemp)"
-#export CRUMB=$(curl  --cookie-jar "$COOKIEJAR" "http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)")
-#curl -X POST --cookie "$COOKIEJAR" -H "$CRUMB" http://localhost:8080/newJob\?name=QLedger  --data-binary @qledgerconfig.xml -H "Content-Type:application/xml"
-
+export COOKIEJAR="$(mktemp)"
+export CRUMB=$(curl  --cookie-jar "$COOKIEJAR" "http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)")
+curl -X POST --cookie "$COOKIEJAR" -H "$CRUMB" http://localhost:8080/createItem\?name=QLedger  --data-binary @qledgerconfig.xml -H "Content-Type:application/xml"
