@@ -42,4 +42,7 @@ Modify the QLedger job in jenkins
 3. Run the QLedger build
 
 
+Troubleshooting:
 
+I noticed that the JENKINS update.jenkins.io has serious problems possibly the mirror to in load, try using another mirror if you can't download the modules
+by updating the VARIABLE export JENKINS_DOWNLOAD_MIRROR_TO_USE=http://mirrors.jenkins-ci.org/ to point somewhere else in the script in step 4
