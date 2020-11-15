@@ -87,13 +87,13 @@ $DEBOS_CMD run --name jenkins-docker  --rm  --detach  --privileged  -e DOCKER_TL
 # This is also done becasue it sometimes times out in install
 
 $DEBOS_CMD cp pluginstoinstall.txt  jenkinsofficialinstaller:/tmp/pluginstoinstall.txt
-$DEBOS_CMD exec jenkinsofficialinstaller sh -c "rm -rf /usr/share/jenkins/ref/plugins/*.lock"
 $DEBOS_CMD exec jenkinsofficialinstaller sh -c "cd /tmp;JENKINS_UC_DOWNLOAD=${JENKINS_DOWNLOAD_MIRROR_TO_USE}  jenkins-plugin-cli --plugin-file  pluginstoinstall.txt"
-$DEBOS_CMD restart jenkinsofficialinstaller
 $DEBOS_CMD exec jenkinsofficialinstaller ansible-galaxy collection install community.kubernetes
+$DEBOS_CMD restart jenkinsofficialinstaller
 
+echo "90 seconds for the system to restart and complete"
 # import the config (crumb is important)
-sleep 60
+sleep 90
 export COOKIEJAR="$(mktemp)"
 export CRUMB=$(curl  --cookie-jar "$COOKIEJAR" "http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)")
 curl -X POST --cookie "$COOKIEJAR" -H "$CRUMB" http://localhost:8080/createItem\?name=QLedger  --data-binary @qledgerconfig.xml -H "Content-Type:application/xml"
