@@ -24,7 +24,54 @@ Modify the repository to your AWS Settings and change the bucket in qledger.tf
 https://github.com/davegermiquet/qledgerautodeploy.git
 
 Update the new forked code on your system 
+In order for this to work you need to add credentialsId in Jenkins:
 
+AMAZON_CRED
+
+Which contain your ACCESS KEY and SECRET KEY of Amazon Deployment
+
+Fork the following repository https://github.com/davegermiquet/qledgerautodeploy.git
+
+Modify the repository to your AWS Settings and change the bucket in qledger.tf
+Update the new forked code on your system
+
+    Add a S3 BUCKET in your AWS account
+    Modify the qledger.tf this segment:
+
+backend "s3" { bucket = "nameofbucket" key = "autodeploy" region = "us-east-1" }
+
+You'll also have to modify the following file change below to your account:
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "*:*",
+            "Resource": "*",
+            "Condition": {"ArnEquals":
+                {"iam:PolicyARN": "arn:aws:iam::749096675657:policy/AmazonEC2FullAccess"}
+                {"iam:PolicyARN": "arn:aws:iam::749096675657:policy/AmazonRoute53FullAccess"}
+                {"iam:PolicyARN": "arn:aws:iam::749096675657:policy/AmazonS3FullAccess"}
+                {"iam:PolicyARN": "arn:aws:iam::749096675657:policy/IAMFullAccess"}
+                {"iam:PolicyARN": "arn:aws:iam::749096675657:policy/AmazonVPCFullAccess"}
+                }
+        }
+    ]
+}
+
+Change line in ansible-docker-playbook.yml Add another bucket for your KOPS setup too:
+
+command: kops create cluster  --name qledger --zones us-esat-1a us-west-2a  --state s3://kopsbucketqledger  --yes
+
+
+The only thing that will cost some much i think in this deployment is route 53 but it should be minimal
+
+
+All this could be automated due to lack of time, I haevn't been able to but should be easily to clean up.
+I think it also can be used as an example of what can be done
+
+ --- END OF EXAMPLE PROEJECT TO SETUP ----
+`
 2. Add a S3 BUCKET in your AWS account
 3. Modify the qledger.tf this segment:
 
@@ -49,3 +96,4 @@ Troubleshooting:
 
 I noticed that the JENKINS update.jenkins.io has serious problems possibly the mirror to in load, try using another mirror if you can't download the modules
 by updating the VARIABLE export JENKINS_DOWNLOAD_MIRROR_TO_USE=http://mirrors.jenkins-ci.org/ to point somewhere else in the script in step 4
+I allso noticed problems after 50-60 builds sometimes docker-jenkins would crash.....just erase and reinstall it
