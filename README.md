@@ -40,25 +40,6 @@ Update the new forked code on your system
 
 backend "s3" { bucket = "nameofbucket" key = "autodeploy" region = "us-east-1" }
 
-You'll also have to modify the following file change below to your account:
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "*:*",
-            "Resource": "*",
-            "Condition": {"ArnEquals":
-                {"iam:PolicyARN": "arn:aws:iam::749096675657:policy/AmazonEC2FullAccess"}
-                {"iam:PolicyARN": "arn:aws:iam::749096675657:policy/AmazonRoute53FullAccess"}
-                {"iam:PolicyARN": "arn:aws:iam::749096675657:policy/AmazonS3FullAccess"}
-                {"iam:PolicyARN": "arn:aws:iam::749096675657:policy/IAMFullAccess"}
-                {"iam:PolicyARN": "arn:aws:iam::749096675657:policy/AmazonVPCFullAccess"}
-                }
-        }
-    ]
-}
-
 Change line in ansible-docker-playbook.yml Add another bucket for your KOPS setup too:
 
 command: kops create cluster  --name qledger --zones us-esat-1a us-west-2a  --state s3://kopsbucketqledger  --yes
