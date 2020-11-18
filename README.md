@@ -78,3 +78,4 @@ Troubleshooting:
 I noticed that the JENKINS update.jenkins.io has serious problems possibly the mirror to in load, try using another mirror if you can't download the modules
 by updating the VARIABLE export JENKINS_DOWNLOAD_MIRROR_TO_USE=http://mirrors.jenkins-ci.org/ to point somewhere else in the script in step 4
 I allso noticed problems after 50-60 builds sometimes docker-jenkins would crash.....just erase and reinstall it
+IF YOU USE THIS IMAGE PLEASE NOTE THIS JENKINS USE AN OLDER VERSION OF ANSIBLE CAUSIGN ME PROBLEMS DUE TO IT HAS ALOT OF PYTHON2 -> PYTHON3 BUGS
