@@ -1,0 +1,15 @@
+blueocean:1.24.3
+workflow-multibranch
+build-timeout:latest
+configuration-as-code:latest
+credentials-binding:latest
+git:latest
+github-branch-source:latest
+pipeline-github-lib:latest
+pipeline-stage-view:latest
+timestamper:latest
+workflow-aggregator:latest
+ws-cleanup:latest
+file-operations:latest
+job-import-plugin
+terraform

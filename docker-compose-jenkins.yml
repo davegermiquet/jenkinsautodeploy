@@ -1,0 +1,19 @@
+version: "3.3"
+services:
+  jenkins:
+    build: .
+    privileged: true
+    volumes:
+      - "./workspace/:/var/jenkins_home/workspace/:rw"
+    ports:
+      - "8888:8080"
+      - "50000:50000"
+  jenkins-docker:
+    image: docker:dind
+    environment:
+      - DOCKER_TLS_CERTDIR=""
+    privileged: true
+    volumes:
+      - "./workspace/:/var/jenkins_home/workspace/:rw"
+    ports:
+      - "2373:2375"
