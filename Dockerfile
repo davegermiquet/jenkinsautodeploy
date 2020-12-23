@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y docker-ce-cli terraform wget ansible rs
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
 RUN ./aws/install
+RUN pip3 install git+https://github.com/ansible-community/ansible-bender
 RUN rm -rf /var/jenkins_home/.ssh
 USER jenkins
 COPY ./files/pluginstoinstall.txt /tmp/pluginstoinstall.txt
